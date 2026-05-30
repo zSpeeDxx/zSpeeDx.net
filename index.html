@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>zSpeeDx — مطور بلجنات ماينكرافت</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="snow-canvas"></canvas>
+
+  <!-- Snow Speed Panel -->
+  <div class="snow-panel-overlay" id="snow-overlay" onclick="closeSnowPanel()"></div>
+  <div class="snow-panel" id="snow-panel">
+    <div class="snow-panel-header">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M12 2l-3 3M12 2l3 3M5.5 5.5l13 13M5.5 5.5l3-3M18.5 5.5l-3-3M2 12h20M2 12l3 3M2 12l3-3M22 12l-3 3M22 12l-3-3M5.5 18.5l13-13M5.5 18.5l3 3M18.5 18.5l-3 3"/></svg>
+      <span>Snow Speed</span>
+    </div>
+    <div class="snow-controls">
+      <button class="snow-btn-control" onclick="decreaseSnowSpeed()" title="ابطيء">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/></svg>
+      </button>
+      <div class="snow-display" id="snow-display">1.0x</div>
+      <button class="snow-btn-control" onclick="increaseSnowSpeed()" title="اسرع">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+    <div class="snow-presets">
+      <button class="snow-preset" onclick="setSnowSpeed(0)" title="إيقاف">⏹</button>
+      <button class="snow-preset" onclick="setSnowSpeed(0.25)">0.25x</button>
+      <button class="snow-preset" onclick="setSnowSpeed(0.5)">0.5x</button>
+      <button class="snow-preset" onclick="setSnowSpeed(1)" id="snow-preset-default">1x</button>
+      <button class="snow-preset" onclick="setSnowSpeed(2)">2x</button>
+      <button class="snow-preset" onclick="setSnowSpeed(3)">3x</button>
+      <button class="snow-preset" onclick="setSnowSpeed(5)">5x</button>
+      <button class="snow-preset" onclick="setSnowSpeed(10)">10x</button>
+    </div>
+    <p class="snow-hint">تعديل سرعة تساقط الثلج</p>
+  </div>
+
+  <nav class="navbar" dir="ltr">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <button class="snow-toggle" onclick="toggleSnowPanel()" title="التحكم بالثلج">
+          <svg class="snow-crystal" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12,1 21.5,6.3 21.5,17.7 12,23 2.5,17.7 2.5,6.3" stroke-width="1.3"/>
+            <line x1="12" y1="1" x2="12" y2="23" stroke-width="1.8"/>
+            <line x1="2.5" y1="6.3" x2="21.5" y2="17.7" stroke-width="1.2"/>
+            <line x1="21.5" y1="6.3" x2="2.5" y2="17.7" stroke-width="1.2"/>
+            <polygon points="12,7.5 16,10 16,14 12,16.5 8,14 8,10" stroke-width="1.1" fill="rgba(var(--accent-r),0.08)"/>
+            <line x1="12" y1="7.5" x2="12" y2="16.5" stroke-width="1.5"/>
+            <line x1="8" y1="10" x2="16" y2="14" stroke-width="1"/>
+            <line x1="16" y1="10" x2="8" y2="14" stroke-width="1"/>
+            <line x1="7" y1="7" x2="9" y2="5.5" stroke-width="1"/>
+            <line x1="17" y1="7" x2="15" y2="5.5" stroke-width="1"/>
+            <line x1="7" y1="17" x2="9" y2="18.5" stroke-width="1"/>
+            <line x1="17" y1="17" x2="15" y2="18.5" stroke-width="1"/>
+            <line x1="4.5" y1="8" x2="6.5" y2="6.5" stroke-width="0.8"/>
+            <line x1="19.5" y1="8" x2="17.5" y2="6.5" stroke-width="0.8"/>
+            <line x1="4.5" y1="16" x2="6.5" y2="17.5" stroke-width="0.8"/>
+            <line x1="19.5" y1="16" x2="17.5" y2="17.5" stroke-width="0.8"/>
+            <circle cx="12" cy="12" r="1.8" stroke-width="1.5"/>
+          </svg>
+        </button>
+        <a href="#" class="nav-logo"><span class="accent">zS</span>peeDx</a>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#hero" onclick="closeNav()">الرئيسية</a></li>
+        <li><a href="#about" onclick="closeNav()">عني</a></li>
+        <li><a href="#projects" onclick="closeNav()">مشاريعي</a></li>
+        <li><a href="#contact" onclick="closeNav()">تواصل</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="theme-wrap" id="theme-wrap">
+          <button class="theme-btn" id="theme-btn" onclick="toggleTheme(event)" title="تغيير اللون">
+            <span class="theme-btn-dot" id="theme-btn-dot"></span>
+            <svg class="theme-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="theme-dropdown" id="theme-dropdown">
+            <button class="theme-dot active" data-theme="red" style="background:linear-gradient(135deg,#FF0000,#C30000,#FF0000)" title="أحمر"></button>
+            <button class="theme-dot" data-theme="blue" style="background:linear-gradient(135deg,#1D4ED8,#7C3AED,#1D4ED8)" title="أزرق"></button>
+            <button class="theme-dot" data-theme="purple" style="background:linear-gradient(135deg,#6D28D9,#A78BFA,#6D28D9)" title="بنفسجي"></button>
+            <button class="theme-dot" data-theme="green" style="background:linear-gradient(135deg,#059669,#22C55E,#059669)" title="أخضر"></button>
+            <button class="theme-dot" data-theme="orange" style="background:linear-gradient(135deg,#EA580C,#FBBF24,#EA580C)" title="برتقالي"></button>
+            <button class="theme-dot" data-theme="cyan" style="background:linear-gradient(135deg,#0E7490,#22D3EE,#0E7490)" title="سماوي"></button>
+            <button class="theme-dot" data-theme="pink" style="background:linear-gradient(135deg,#BE185D,#F472B6,#BE185D)" title="وردي"></button>
+          </div>
+        </div>
+        <a href="https://discord.com/users/1056102948628860989" target="_blank" rel="noopener noreferrer" class="nav-discord">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          ديسكورد
+        </a>
+        <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="قائمة">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="nav-overlay" onclick="closeNav()"></div>
+
+  <main>
+    <section id="hero" dir="ltr">
+      <div class="hero-bg-glow"></div>
+      <div class="hero-content fade-in">
+        <div class="hero-avatar-row">
+          <img src="https://mc-heads.net/avatar/zSpeeDxx/128" alt="zSpeeDx" class="avatar" id="avatar">
+          <img src="https://mc-heads.net/body/zSpeeDxx/right" alt="zSpeeDx skin" class="skin-render" id="skin">
+        </div>
+        <div class="hero-badge">Raven Network</div>
+        <h1 class="hero-title"><span class="gradient-text">zSpeeDx</span></h1>
+        <p class="hero-subtitle">Minecraft <span class="accent">Server Developer</span></p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">2+</span>
+            <span class="hero-stat-lbl">Years</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">1</span>
+            <span class="hero-stat-lbl">Network</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">+50</span>
+            <span class="hero-stat-lbl">Server</span>
+          </div>
+        </div>
+        <div class="hero-ip-group">
+          <button class="hero-ip" id="copy-ip" onclick="copyIP()">
+            <span id="ip-text">raven-mc.net</span>
+            <span class="ip-copy-hint">Copy</span>
+          </button>
+          <div class="hero-ip-extras">
+            <span class="hero-server-status">
+              <span class="status-dot"></span>
+              Server Online
+              <span class="status-players">
+                <span id="online-count">—</span>
+                <span class="online-max">/2026</span>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="hero-btns">
+          <a href="https://discord.com/users/1056102948628860989" target="_blank" rel="noopener noreferrer" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            Join Discord
+          </a>
+          <a href="#projects" class="btn-secondary">View Projects</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" dir="rtl">
+      <div class="container fade-in">
+        <h2 class="section-title">عني</h2>
+        <div class="about-grid">
+          <div class="about-card glass">
+            <p class="about-name">zSpeeDx</p>
+            <p>مُبرمج ومُطوّر خوادم ماينكرافت، أُطوّر <strong class="accent">الإضافات (Plugins) من الصفر</strong> لبناء أنظمة متكاملة. أعمل حاليًا في <strong class="accent">Raven Network</strong>.</p>
+            <p>أستطيع بناء نظام خادم متكامل — من الـ Proxy إلى الـ Core، ومن الـ API إلى قاعدة البيانات. الخادم يكون جاهزًا بكود نظيف وأداء عالٍ.</p>
+            <div class="skills">
+              <span class="skill-tag">Java</span>
+              <span class="skill-tag">Paper</span>
+              <span class="skill-tag">Purpur</span>
+              <span class="skill-tag">Folia</span>
+              <span class="skill-tag">Velocity</span>
+              <span class="skill-tag">VeloFlame</span>
+              <span class="skill-tag">MySQL</span>
+              <span class="skill-tag">API</span>
+              <span class="skill-tag">Configuration</span>
+            </div>
+          </div>
+          <div class="about-card glass">
+            <h3 class="about-card-title">مهامي</h3>
+            <ul class="about-list">
+              <li>تطوير إضافات (Plugins) من الصفر</li>
+              <li>هندسة الخوادم ببنية تحتية قويّة</li>
+              <li>أنظمة البروكسي (Velocity · VeloFlame)</li>
+              <li>دمج APIs وقواعد البيانات</li>
+              <li>تصميم أنظمة متكاملة للخادم</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" dir="rtl">
+      <div class="container fade-in">
+        <h2 class="section-title">مشاريعي</h2>
+        <div class="projects-grid">
+          <div class="project-card glass">
+            <div class="card-icon">⚡</div>
+            <h3>Raven Network</h3>
+            <p>تنظيم وتشكيل وهيكلة جميع الـ Mini Games داخل Raven Network بما فيها البنية التحتية</p>
+            <span class="card-tech">Java · Paper · MySQL</span>
+          </div>
+          <div class="project-card glass">
+            <div class="card-icon">🎮</div>
+            <h3>Creator Style</h3>
+            <p>إنشاء ستايلات حديثة بألوان مواكبة للتطور التقني وإضافة ثيمات مميزة عن الجميع</p>
+            <span class="card-tech">Kotlin · Velocity · Redis</span>
+          </div>
+          <div class="project-card glass">
+            <div class="card-icon">🌐</div>
+            <h3>Custom Plugins</h3>
+            <p>إنشاء وتصميم بلوقنات مطورة ومميزة وإنشاء مواقع مبدعة بصرياً</p>
+            <span class="card-tech">Java · Velocity · Redis</span>
+          </div>
+          <div class="project-card glass">
+            <div class="card-icon">🎨</div>
+            <h3>More and More...</h3>
+            <p>وهناك الكثير والكثير من المشاريع والسيرفرات التي عملت وأقمت بها أفضل تجارب اللعب</p>
+            <span class="card-tech">Java · Paper · NBT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact" dir="rtl">
+      <div class="container fade-in">
+        <div class="footer-glass glass">
+          <h2 class="section-title" style="margin-bottom:24px;"><span class="accent">//</span> تواصل معي</h2>
+          <p style="color:var(--text-secondary);margin-bottom:32px;">هل لديك فكرة مشروع أو ترغب في التحدث؟ تواصل معي عبر الديسكورد.</p>
+          <div class="footer-links">
+            <a href="https://discord.com/users/1056102948628860989" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+              <span dir="ltr">Join Discord</span>
+            </a>
+          </div>
+          <p class="footer-credit">صمم وطور بواسطة <span class="accent">zSpeeDx</span> &copy; 2026</p>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Toast for copy -->
+  <div class="toast" id="toast">تم النسخ! ✅</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
