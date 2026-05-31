@@ -648,15 +648,7 @@ section:nth-of-type(even) .fade-in.revealed {
   font-size: 1.2rem;
   color: var(--text-secondary);
   font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.hero-role {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  font-weight: 400;
   margin-bottom: 28px;
-  opacity: 0.8;
 }
 
 /* Hero Stats */
