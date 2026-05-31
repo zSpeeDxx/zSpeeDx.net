@@ -59,15 +59,42 @@ main {
   padding: 0 24px;
 }
 
-/* ─── Fade In ─── */
+/* ─── Scroll Reveal ─── */
 .fade-in {
   opacity: 0;
-  transform: translateY(30px);
-  animation: fadeUp 0.8s ease forwards;
+  transform: translateY(40px) scale(0.95);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
+.fade-in.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+section:nth-of-type(odd) .fade-in {
+  transform: translateX(120px) scale(0.95);
+}
+
+section:nth-of-type(even) .fade-in {
+  transform: translateX(-120px) scale(0.95);
+}
+
+section:nth-of-type(odd) .fade-in.revealed,
+section:nth-of-type(even) .fade-in.revealed {
+  transform: translateX(0) scale(1);
+}
+
+/* Stagger children inside fade-in */
+.fade-in > * {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition-delay: calc(0.15s * var(--i, 0));
+}
+
+.fade-in.revealed > * {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ─── Accent ─── */

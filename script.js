@@ -328,3 +328,17 @@ function decreaseSnowSpeed() {
 function setSnowSpeed(val) {
   window.updateSnowSpeed(val);
 }
+
+/* ─── Scroll Reveal ─── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      entry.target.style.setProperty('--i', i);
+      requestAnimationFrame(() => entry.target.classList.add('revealed'));
+    } else {
+      entry.target.classList.remove('revealed');
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
